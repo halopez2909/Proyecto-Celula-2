@@ -1,0 +1,17 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/authdb
+    username: reto
+    password: reto
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+security:
+  jwt:
+    secret: "CurrenWatches_SecretKey_SuperSegura_2024!!"
+    expiration-minutes: 15
