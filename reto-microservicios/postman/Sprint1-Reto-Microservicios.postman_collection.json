@@ -1,0 +1,250 @@
+{
+	"info": {
+		"_postman_id": "sprint1-reto-microservicios",
+		"name": "Reto Microservicios - Sprint 1",
+		"description": "Colección de pruebas para Sprint 1: Gateway, Auth, Routing, JWT",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "gateway_url",
+			"value": "http://localhost:8080"
+		},
+		{
+			"key": "jwt_token",
+			"value": ""
+		}
+	],
+	"item": [
+		{
+			"name": "1. Health Checks",
+			"item": [
+				{
+					"name": "Health - Gateway (8080)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{gateway_url}}/actuator/health",
+							"host": ["{{gateway_url}}"],
+							"path": ["actuator", "health"]
+						}
+					}
+				},
+				{
+					"name": "Health - Auth Service (8081)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/actuator/health",
+							"host": ["http://localhost:8081"],
+							"path": ["actuator", "health"]
+						}
+					}
+				},
+				{
+					"name": "Health - Catalog Service (8082)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8082/actuator/health",
+							"host": ["http://localhost:8082"],
+							"path": ["actuator", "health"]
+						}
+					}
+				},
+				{
+					"name": "Health - Order Service (8083)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8083/actuator/health",
+							"host": ["http://localhost:8083"],
+							"path": ["actuator", "health"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "2. Auth (Register + Login)",
+			"item": [
+				{
+					"name": "Register - ADMIN",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@test.com\",\n    \"password\": \"admin123\",\n    \"role\": \"ADMIN\"\n}"
+						},
+						"url": {
+							"raw": "{{gateway_url}}/auth/register",
+							"host": ["{{gateway_url}}"],
+							"path": ["auth", "register"]
+						}
+					}
+				},
+				{
+					"name": "Register - CUSTOMER",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"cliente@test.com\",\n    \"password\": \"cliente123\",\n    \"role\": \"CUSTOMER\"\n}"
+						},
+						"url": {
+							"raw": "{{gateway_url}}/auth/register",
+							"host": ["{{gateway_url}}"],
+							"path": ["auth", "register"]
+						}
+					}
+				},
+				{
+					"name": "Login - ADMIN (copiar token)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.token) {",
+									"    pm.collectionVariables.set('jwt_token', jsonData.token);",
+									"    console.log('Token guardado automáticamente');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@test.com\",\n    \"password\": \"admin123\"\n}"
+						},
+						"url": {
+							"raw": "{{gateway_url}}/auth/login",
+							"host": ["{{gateway_url}}"],
+							"path": ["auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "Login - Credenciales inválidas → 401",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@test.com\",\n    \"password\": \"wrongpassword\"\n}"
+						},
+						"url": {
+							"raw": "{{gateway_url}}/auth/login",
+							"host": ["{{gateway_url}}"],
+							"path": ["auth", "login"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "3. Routing con JWT",
+			"item": [
+				{
+					"name": "Catalog Ping - CON token → 200",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{gateway_url}}/catalog/ping",
+							"host": ["{{gateway_url}}"],
+							"path": ["catalog", "ping"]
+						}
+					}
+				},
+				{
+					"name": "Orders Ping - CON token → 200",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{gateway_url}}/orders/ping",
+							"host": ["{{gateway_url}}"],
+							"path": ["orders", "ping"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "4. Pruebas de Seguridad",
+			"item": [
+				{
+					"name": "Sin token → 401",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{gateway_url}}/orders/ping",
+							"host": ["{{gateway_url}}"],
+							"path": ["orders", "ping"]
+						}
+					}
+				},
+				{
+					"name": "Token inválido → 401",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.INVALIDO.token_falso"
+							}
+						],
+						"url": {
+							"raw": "{{gateway_url}}/orders/ping",
+							"host": ["{{gateway_url}}"],
+							"path": ["orders", "ping"]
+						}
+					}
+				}
+			]
+		}
+	]
+}

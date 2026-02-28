@@ -1,0 +1,10 @@
+C:\Users\bauti\Documents\reto-microservicios\services\auth-service\src\main\java\com\reto\auth\AuthServiceApplication.java
+C:\Users\bauti\Documents\reto-microservicios\services\auth-service\src\main\java\com\reto\auth\config\SecurityConfig.java
+C:\Users\bauti\Documents\reto-microservicios\services\auth-service\src\main\java\com\reto\auth\controller\AuthController.java
+C:\Users\bauti\Documents\reto-microservicios\services\auth-service\src\main\java\com\reto\auth\dto\LoginRequest.java
+C:\Users\bauti\Documents\reto-microservicios\services\auth-service\src\main\java\com\reto\auth\dto\RegisterRequest.java
+C:\Users\bauti\Documents\reto-microservicios\services\auth-service\src\main\java\com\reto\auth\dto\TokenResponse.java
+C:\Users\bauti\Documents\reto-microservicios\services\auth-service\src\main\java\com\reto\auth\entity\Role.java
+C:\Users\bauti\Documents\reto-microservicios\services\auth-service\src\main\java\com\reto\auth\entity\UserEntity.java
+C:\Users\bauti\Documents\reto-microservicios\services\auth-service\src\main\java\com\reto\auth\repository\UserRepository.java
+C:\Users\bauti\Documents\reto-microservicios\services\auth-service\src\main\java\com\reto\auth\security\JwtService.java
