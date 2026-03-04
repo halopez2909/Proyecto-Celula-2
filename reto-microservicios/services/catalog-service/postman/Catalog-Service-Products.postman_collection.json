@@ -1,0 +1,157 @@
+{
+  "info": {
+    "name": "Catalog Service - Products CRUD",
+    "description": "Pruebas CRUD de productos para catalog-service",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8082"
+    },
+    {
+      "key": "productId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "POST - Crear producto",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Laptop HP 15\",\n  \"description\": \"Laptop 15 pulgadas, 8GB RAM\",\n  \"price\": 599.99,\n  \"sku\": \"LAP-HP-001\"\n}"
+        },
+        "url": "{{baseUrl}}/products",
+        "description": "Crea un nuevo producto. Guarda el id en productId para PUT/DELETE."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 201', function () { pm.response.to.have.status(201); });",
+              "pm.test('Body tiene id', function () {",
+              "  const json = pm.response.json();",
+              "  pm.expect(json).to.have.property('id');",
+              "  if (json.id) pm.collectionVariables.set('productId', json.id);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET - Listar productos",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/products",
+        "description": "Obtiene todos los productos."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('Body es array', function () { pm.expect(pm.response.json()).to.be.an('array'); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "PUT - Actualizar producto",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Laptop HP 15 (Actualizada)\",\n  \"description\": \"Laptop 15 pulgadas, 16GB RAM\",\n  \"price\": 649.99,\n  \"sku\": \"LAP-HP-001\"\n}"
+        },
+        "url": "{{baseUrl}}/products/{{productId}}",
+        "description": "Actualiza el producto con id productId."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 200 o 404', function () {",
+              "  pm.expect([200, 404]).to.include(pm.response.code);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "DELETE - Eliminar producto",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": "{{baseUrl}}/products/{{productId}}",
+        "description": "Elimina el producto con id productId."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 200 o 404', function () {",
+              "  pm.expect([200, 404]).to.include(pm.response.code);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "POST - Validación (campos vacíos)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"\",\n  \"price\": null,\n  \"sku\": \"\"\n}"
+        },
+        "url": "{{baseUrl}}/products",
+        "description": "Debe devolver 400 por validación."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 400', function () { pm.response.to.have.status(400); });",
+              "pm.test('Body tiene errors', function () { pm.expect(pm.response.json()).to.have.property('errors'); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    }
+  ]
+}
