@@ -1,3 +1,0 @@
-com\reto\gateway\filter\CorrelationIdFilter.class
-com\reto\gateway\filter\JwtAuthFilter.class
-com\reto\gateway\ApiGatewayApplication.class
