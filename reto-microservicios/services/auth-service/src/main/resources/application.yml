@@ -18,7 +18,7 @@ spring:
 security:
   jwt:
     secret: "CurrenWatches_SecretKey_SuperSegura_2024!!"
-    expiration-minutes: 15
+    expiration-minutes: 1
 
 management:
   endpoints:
