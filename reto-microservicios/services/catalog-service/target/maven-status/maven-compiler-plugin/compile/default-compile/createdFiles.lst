@@ -1,0 +1,10 @@
+com\reto\catalog\CatalogServiceApplication.class
+com\reto\catalog\entity\ProcessedEvent.class
+com\reto\catalog\repository\ProcessedEventRepository.class
+com\reto\catalog\exception\ValidationExceptionHandler.class
+com\reto\catalog\entity\ProductEntity.class
+com\reto\catalog\service\ProductService.class
+com\reto\catalog\dto\ProductRequest.class
+com\reto\catalog\controller\ProductController.class
+com\reto\catalog\controller\PingController.class
+com\reto\catalog\repository\ProductRepository.class
