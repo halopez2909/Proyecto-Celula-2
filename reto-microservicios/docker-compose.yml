@@ -1,7 +1,7 @@
 services:
-  postgres:
+  postgres-auth:
     image: postgres:16
-    container_name: reto_postgres
+    container_name: reto_postgres_auth
     environment:
       POSTGRES_USER: reto
       POSTGRES_PASSWORD: reto
@@ -9,8 +9,42 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - pgdata:/var/lib/postgresql/data
-      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+      - pgdata_auth:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U reto"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  postgres-catalog:
+    image: postgres:16
+    container_name: reto_postgres_catalog
+    environment:
+      POSTGRES_USER: reto
+      POSTGRES_PASSWORD: reto
+      POSTGRES_DB: catalogdb
+    ports:
+      - "5434:5432"
+    volumes:
+      - pgdata_catalog:/var/lib/postgresql/data
+      - ./init-catalog.sql:/docker-entrypoint-initdb.d/init-catalog.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U reto"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  postgres-orders:
+    image: postgres:16
+    container_name: reto_postgres_orders
+    environment:
+      POSTGRES_USER: reto
+      POSTGRES_PASSWORD: reto
+      POSTGRES_DB: orderdb
+    ports:
+      - "5435:5432"
+    volumes:
+      - pgdata_orders:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U reto"]
       interval: 10s
@@ -33,4 +67,6 @@ services:
       retries: 5
 
 volumes:
-  pgdata:
+  pgdata_auth:
+  pgdata_catalog:
+  pgdata_orders:
