@@ -5,10 +5,13 @@ import com.reto.order.dto.StockResponse;
 import com.reto.order.entity.OrderEntity;
 import com.reto.order.entity.OrderItem;
 import com.reto.order.exception.StockConflictException;
+import com.reto.order.messaging.OrderCreatedEvent;
+import com.reto.order.messaging.OrderEventPublisher;
 import com.reto.order.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 @Service
 public class OrderService {
@@ -16,6 +19,8 @@ public class OrderService {
     private OrderRepository orderRepository;
     @Autowired
     private CatalogClient catalogClient;
+    @Autowired
+    private OrderEventPublisher eventPublisher;
     public OrderEntity createOrder(CreateOrderRequest request, String correlationId) {
         for (var item : request.getItems()) {
             Long productId = item.getProductId();
@@ -32,6 +37,18 @@ public class OrderService {
                 .map(i -> new OrderItem(i.getProductId(), i.getQuantity()))
                 .collect(Collectors.toList());
         order.setItems(items);
-        return orderRepository.save(order);
+        OrderEntity saved = orderRepository.save(order);
+        List<OrderCreatedEvent.ItemEvent> eventItems = saved.getItems().stream()
+                .map(i -> new OrderCreatedEvent.ItemEvent(i.getProductId(), i.getQuantity()))
+                .collect(Collectors.toList());
+        OrderCreatedEvent event = new OrderCreatedEvent(
+                UUID.randomUUID().toString(),
+                correlationId,
+                saved.getId(),
+                saved.getUserId(),
+                eventItems
+        );
+        eventPublisher.publishOrderCreated(event);
+        return saved;
     }
 }
