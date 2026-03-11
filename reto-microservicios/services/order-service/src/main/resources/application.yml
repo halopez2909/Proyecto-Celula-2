@@ -5,13 +5,18 @@ spring:
   application:
     name: order-service
   datasource:
-    url: jdbc:postgresql://localhost:5433/orderdb
+    url: jdbc:postgresql://localhost:5433/authdb
     username: reto
     password: reto
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: reto
+    password: reto
 
 management:
   endpoints:

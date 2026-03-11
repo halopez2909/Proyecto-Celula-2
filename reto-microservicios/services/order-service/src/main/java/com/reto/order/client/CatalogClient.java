@@ -16,7 +16,7 @@ public class CatalogClient {
     private final String CATALOG_URL = "http://localhost:8083/catalog/check-stock";
  
     public StockResponse checkStock(Long productId, Integer quantity, String correlationId) {
-        // REQUISITO: Log mostrando la llamada REST con el Correlation ID
+        // Log mostrando la llamada REST con el Correlation ID
         System.out.println("[DEV 5 - LOG] Llamando a Catalog - Producto: " + productId + " | CorrelationId: " + correlationId);
  
         // Construimos la URL con los parámetros productId y quantity
@@ -26,10 +26,10 @@ public class CatalogClient {
                 .toUriString();
  
         try {
-            // Hacemos la llamada GET
+            // en esto llamaos al GET
             return restTemplate.getForObject(url, StockResponse.class);
         } catch (RestClientException e) {
-            // REQUISITO: Si Catalog no responde -> lanzar error para que retorne 500
+            // es para que lanze error para que devuelva 500
             throw new RuntimeException("Error de comunicación con el servicio de Catálogo");
         }
     }

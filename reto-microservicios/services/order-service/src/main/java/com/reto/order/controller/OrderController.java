@@ -2,7 +2,9 @@ package com.reto.order.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,4 +32,8 @@ public class OrderController {
         OrderEntity newOrder = orderService.createOrder(request, cid);
         return ResponseEntity.ok(newOrder);
     }
+    @PutMapping("/{id}/cancel")
+public ResponseEntity<?> cancelOrder(@PathVariable Long id) {
+    return ResponseEntity.ok(orderService.cancelOrder(id));
+}
 }
