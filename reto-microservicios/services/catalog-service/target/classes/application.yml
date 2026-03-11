@@ -1,0 +1,26 @@
+server:
+  port: 8082
+spring:
+  application:
+    name: catalog-service
+  datasource:
+    url: jdbc:postgresql://localhost:5434/catalogdb
+    username: reto
+    password: reto
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: reto
+    password: reto
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+logging:
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss} [%X{correlationId}] %-5level %logger{36} - %msg%n'
