@@ -2,12 +2,7 @@ package com.reto.order.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import com.reto.order.dto.CreateOrderRequest;
 import com.reto.order.entity.OrderEntity;
 import com.reto.order.service.OrderService;
@@ -20,14 +15,12 @@ public class OrderController {
     private OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<OrderEntity> create(
-            @RequestBody CreateOrderRequest request,
-            @RequestHeader(value = "X-Correlation-Id", required = false) String correlationId) {
-        
-        // Si no viene correlationId (por si pruebas directo), le ponemos uno genérico
-        String cid = (correlationId != null) ? correlationId : "manual-test";
-        
-        OrderEntity newOrder = orderService.createOrder(request, cid);
-        return ResponseEntity.ok(newOrder);
+    public ResponseEntity<OrderEntity> create(@RequestBody CreateOrderRequest request) {
+        return ResponseEntity.ok(orderService.createOrder(request));
+    }
+
+    @PutMapping("/{id}/cancel")
+    public ResponseEntity<?> cancelOrder(@PathVariable Long id) {
+        return ResponseEntity.ok(orderService.cancelOrder(id));
     }
 }

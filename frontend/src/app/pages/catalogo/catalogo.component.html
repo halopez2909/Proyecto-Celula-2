@@ -1,0 +1,31 @@
+﻿<div class="catalogo-wrapper">
+  <nav class="navbar">
+    <div class="nav-brand">ðŸ›’ Microservicios</div>
+    <div class="nav-actions">
+      <button class="btn-pedido" (click)="irACrearPedido()">+ Crear Pedido</button>
+      <button class="btn-logout" (click)="logout()">Cerrar Sesion</button>
+    </div>
+  </nav>
+  <div class="container">
+    <div class="page-header">
+      <h1>Catalogo de Productos</h1>
+      <p>{{ productos.length }} productos disponibles</p>
+    </div>
+    <div class="loading" *ngIf="loading"><div class="spinner"></div><p>Cargando productos...</p></div>
+    <div class="alert-error" *ngIf="error">âš ï¸ {{ error }}</div>
+    <div class="productos-grid" *ngIf="!loading && !error">
+      <div class="producto-card" *ngFor="let producto of productos">
+        <div class="producto-icon">ðŸ“¦</div>
+        <div class="producto-info">
+          <h3>{{ producto.name }}</h3>
+          <p class="sku">SKU: {{ producto.sku }}</p>
+          <p class="descripcion">{{ producto.description }}</p>
+        </div>
+        <div class="producto-footer">
+          <span class="precio">\${{ producto.price | number:'1.2-2' }}</span>
+          <span class="stock" [class.stock-bajo]="producto.stock < 10">Stock: {{ producto.stock }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
