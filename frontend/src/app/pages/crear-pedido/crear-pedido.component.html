@@ -1,7 +1,7 @@
-﻿<div class="pedido-wrapper">
+<div class="pedido-wrapper">
   <nav class="navbar">
-    <div class="nav-brand">ðŸ›’ Microservicios</div>
-    <button class="btn-volver" (click)="volver()">â† Volver al Catalogo</button>
+    <div class="nav-brand">&#128345; Microservicios</div>
+    <button class="btn-volver" (click)="volver()">&#8592; Volver al Catalogo</button>
   </nav>
   <div class="container">
     <div class="page-header">
@@ -14,7 +14,7 @@
           <label>Producto</label>
           <select [(ngModel)]="productId" name="productId" required class="form-control">
             <option [value]="null" disabled>Selecciona un producto...</option>
-            <option *ngFor="let p of productos" [value]="p.id">{{ p.name }} - Stock: {{ p.stock }} - \${{ p.price }}</option>
+            <option *ngFor="let p of productos" [value]="p.id">{{ p.name }} - Stock: {{ p.stock }} - ${{ p.price }}</option>
           </select>
         </div>
         <div class="form-group">
@@ -32,7 +32,7 @@
       </form>
     </div>
     <div class="exito-card" *ngIf="exito && pedidoCreado">
-      <div class="exito-icon">âœ…</div>
+      <div class="exito-icon">&#10003;</div>
       <h2>Pedido creado exitosamente!</h2>
       <p>Tu pedido fue registrado en el sistema.</p>
       <div class="pedido-detalle">
