@@ -14,4 +14,12 @@ export class OrderService {
       items: [{ productId, quantity }]
     });
   }
+
+  getOrdersByUserId(userId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/orders?userId=${userId}`);
+  }
+
+  cancelOrder(orderId: number): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/orders/${orderId}/cancel`, {});
+  }
 }
