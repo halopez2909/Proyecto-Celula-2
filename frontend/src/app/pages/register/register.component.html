@@ -1,0 +1,71 @@
+<div class="register-wrapper">
+  <div class="register-card">
+
+    <div class="register-header">
+      <span class="logo-icon">🕐</span>
+      <h1>CurrenWatches</h1>
+      <p>Creá tu cuenta y explorá nuestra colección</p>
+    </div>
+
+    <div *ngIf="successMessage" class="alert alert-ok">
+      ✅ {{ successMessage }}
+    </div>
+    <div *ngIf="errorMessage" class="alert alert-err">
+      ❌ {{ errorMessage }}
+    </div>
+
+    <div class="form-group">
+      <label>Nombre completo</label>
+      <input
+        type="text"
+        [(ngModel)]="name"
+        placeholder="Tu nombre"
+        [disabled]="isLoading"
+        class="form-input"/>
+    </div>
+
+    <div class="form-group">
+      <label>Correo electrónico</label>
+      <input
+        type="email"
+        [(ngModel)]="email"
+        placeholder="tu@email.com"
+        [disabled]="isLoading"
+        class="form-input"/>
+    </div>
+
+    <div class="form-group">
+      <label>Contraseña</label>
+      <input
+        type="password"
+        [(ngModel)]="password"
+        placeholder="Mínimo 6 caracteres"
+        [disabled]="isLoading"
+        class="form-input"/>
+    </div>
+
+    <div class="form-group">
+      <label>Confirmar contraseña</label>
+      <input
+        type="password"
+        [(ngModel)]="confirmPassword"
+        placeholder="Repetí tu contraseña"
+        [disabled]="isLoading"
+        class="form-input"/>
+    </div>
+
+    <button
+      class="btn-register"
+      [disabled]="isLoading"
+      (click)="onSubmit()">
+      <span *ngIf="isLoading" class="spinner-sm"></span>
+      {{ isLoading ? 'Creando cuenta...' : 'Crear cuenta' }}
+    </button>
+
+    <div class="register-footer">
+      ¿Ya tenés cuenta?
+      <a routerLink="/login">Iniciá sesión</a>
+    </div>
+
+  </div>
+</div>
