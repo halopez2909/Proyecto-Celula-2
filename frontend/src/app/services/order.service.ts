@@ -1,4 +1,4 @@
-﻿import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -9,7 +9,7 @@ export class OrderService {
   constructor(private http: HttpClient) {}
 
   crearPedido(productId: number, quantity: number): Observable<any> {
-    return this.http.post<any>(this.apiUrl + '/orders/orders', {
+    return this.http.post<any>(this.apiUrl + '/orders', {
       userId: 1,
       items: [{ productId, quantity }]
     });
