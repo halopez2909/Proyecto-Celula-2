@@ -21,15 +21,32 @@ export class CrearPedidoComponent implements OnInit {
   pedidoCreado: any = null;
   private apiUrl = 'http://localhost:8080';
 
-  constructor(private http: HttpClient, private router: Router, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('token');
     return new HttpHeaders({ Authorization: 'Bearer ' + token });
   }
 
+  private getUserId(): number {
+    const token = localStorage.getItem('token');
+    if (!token) return 0;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.userId ?? payload.id ?? 0;
+    } catch {
+      return 0;
+    }
+  }
+
   ngOnInit() {
-    this.http.get<any[]>(this.apiUrl + '/catalog/products', { headers: this.getHeaders() }).subscribe({
+    this.http.get<any[]>(this.apiUrl + '/catalog/products', {
+      headers: this.getHeaders()
+    }).subscribe({
       next: (data) => { this.productos = data; this.cdr.detectChanges(); },
       error: (err) => { console.error('Error cargando productos:', err); }
     });
@@ -40,8 +57,11 @@ export class CrearPedidoComponent implements OnInit {
     this.error = '';
     this.exito = false;
     this.loading = true;
+
+    const userId = this.getUserId();
+
     this.http.post<any>(this.apiUrl + '/orders', {
-      userId: 1,
+      userId: userId,
       items: [{ productId: this.productId, quantity: this.quantity }]
     }, { headers: this.getHeaders() }).subscribe({
       next: (data) => {
@@ -53,15 +73,22 @@ export class CrearPedidoComponent implements OnInit {
       error: (err) => {
         this.loading = false;
         if (err.status === 409) {
-          this.error = 'No hay stock suficiente para completar este pedido.';
+          this.error = 'No hay stock suficiente para este pedido.';
         } else {
-          this.error = 'Ocurrio un error al crear el pedido. Intenta nuevamente.';
+          this.error = 'Error al crear el pedido. Intenta nuevamente.';
         }
         this.cdr.detectChanges();
       }
     });
   }
 
+  verMisPedidos() { this.router.navigate(['/mis-pedidos']); }
   volver() { this.router.navigate(['/catalogo']); }
-  nuevoPedido() { this.exito = false; this.pedidoCreado = null; this.error = ''; this.productId = null; this.quantity = 1; }
+  nuevoPedido() {
+    this.exito = false;
+    this.pedidoCreado = null;
+    this.error = '';
+    this.productId = null;
+    this.quantity = 1;
+  }
 }

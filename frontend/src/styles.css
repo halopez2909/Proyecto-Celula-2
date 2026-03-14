@@ -1,10 +1,18 @@
-﻿* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-  background-color: #f0f2f5;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #F5F0EB;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  color: #1C1C1E;
+}
+
+:root {
+  --color-negro:    #1C1C1E;
+  --color-grafito:  #2C2C2E;
+  --color-dorado:   #C9A84C;
+  --color-dorado-claro: #E8D5A3;
+  --color-crema:    #F5F0EB;
+  --color-blanco:   #FFFFFF;
+  --color-gris:     #8E8E93;
+  --color-borde:    #E0D9CF;
 }

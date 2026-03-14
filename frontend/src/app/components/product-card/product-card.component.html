@@ -1,0 +1,34 @@
+@let p = product();
+<article class="product-card">
+  <div class="product-card__image-wrap">
+    <img
+      [src]="p.image"
+      [alt]="p.name"
+      class="product-card__image"
+      loading="lazy"
+      (error)="$any($event.target).src = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400'"
+    />
+    @if (p.stock < 5 && p.stock > 0) {
+      <span class="product-card__badge product-card__badge--low">Pocas unidades</span>
+    }
+    @if (p.stock === 0) {
+      <span class="product-card__badge product-card__badge--out">Agotado</span>
+    }
+  </div>
+  <div class="product-card__body">
+    <h3 class="product-card__title">{{ p.name }}</h3>
+    @if (p.description) {
+      <p class="product-card__desc">{{ p.description }}</p>
+    }
+    <div class="product-card__footer">
+      <span class="product-card__price">{{ p.price | number:'1.0-0' }} COP</span>
+      <span
+        class="product-card__stock"
+        [class.product-card__stock--low]="p.stock < 10"
+        [class.product-card__stock--out]="p.stock === 0"
+      >
+        Stock: {{ p.stock }}
+      </span>
+    </div>
+  </div>
+</article>

@@ -1,0 +1,20 @@
+<nav class="navbar">
+  <a routerLink="/home" class="nav-brand" aria-label="Inicio">
+    <span class="nav-logo">&#9900;</span>
+    <span>Imperial Watches</span>
+  </a>
+  <button class="nav-toggle" type="button" aria-label="Abrir menu" (click)="menuOpen = !menuOpen">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links" [class.open]="menuOpen">
+    <li><a routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Inicio</a></li>
+    <li><a routerLink="/catalogo" routerLinkActive="active">Catalogo</a></li>
+    @if (isLoggedIn) {
+      <li><a routerLink="/mis-pedidos" routerLinkActive="active">Mis pedidos</a></li>
+      <li><a routerLink="/crear-pedido" routerLinkActive="active">Crear pedido</a></li>
+      <li><a class="nav-logout" (click)="logout()">Cerrar sesion</a></li>
+    } @else {
+      <li><a routerLink="/login" routerLinkActive="active">Login</a></li>
+    }
+  </ul>
+</nav>

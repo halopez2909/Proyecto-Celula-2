@@ -1,0 +1,58 @@
+<div class="home">
+  <!-- Banner principal -->
+  <section class="hero">
+    <div class="hero__content">
+      <h1 class="hero__title">Bienvenido a Imperial Watches</h1>
+      <p class="hero__subtitle">Encuentra el reloj que define tu estilo. Diseno, precision y calidad en cada pieza.</p>
+      <a routerLink="/catalogo" class="hero__cta">Ver catalogo</a>
+    </div>
+    <div class="hero__decoration" aria-hidden="true">&#8984;</div>
+  </section>
+
+  <!-- Seccion informativa -->
+  <section class="info">
+    <div class="info__inner">
+      <h2 class="info__title">Por que comprar con nosotros?</h2>
+      <div class="info__grid">
+        <div class="info__card">
+          <span class="info__icon">&#9989;</span>
+          <h3>Garantia oficial</h3>
+          <p>Todos nuestros relojes incluyen garantia de fabrica y certificado de autenticidad.</p>
+        </div>
+        <div class="info__card">
+          <span class="info__icon">&#128666;</span>
+          <h3>Envio seguro</h3>
+          <p>Envio nacional e internacional con embalaje protegido y seguro.</p>
+        </div>
+        <div class="info__card">
+          <span class="info__icon">&#128172;</span>
+          <h3>Atencion personalizada</h3>
+          <p>Equipo experto para asesorarte en tu compra y cuidados del reloj.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Productos destacados -->
+  <section class="featured">
+    <div class="featured__inner">
+      <h2 class="featured__title">Relojes destacados</h2>
+      <p class="featured__subtitle">Algunas de nuestras piezas mas demandadas</p>
+      @if (loading) {
+        <div class="featured__loading">
+          <div class="spinner"></div>
+          <p>Cargando productos...</p>
+        </div>
+      } @else if (featuredProducts.length > 0) {
+        <div class="featured__grid">
+          @for (product of featuredProducts; track product.id) {
+            <app-product-card [product]="product" />
+          }
+        </div>
+        <a routerLink="/catalogo" class="featured__link">Ver todos los relojes &#8594;</a>
+      } @else {
+        <p class="featured__empty">No hay productos destacados en este momento.</p>
+      }
+    </div>
+  </section>
+</div>

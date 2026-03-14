@@ -1,0 +1,206 @@
+.home { min-height: 100vh; }
+
+/* ── HERO ────────────────────────────────────────────── */
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 420px;
+  padding: 3rem 1.5rem;
+  background: linear-gradient(135deg, #1C1C1E 0%, #2C2C2E 50%, #1C1C1E 100%);
+  color: #fff;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 2px solid #C9A84C;
+}
+
+.hero__decoration {
+  position: absolute;
+  right: 8%;
+  bottom: 8%;
+  font-size: 10rem;
+  opacity: 0.05;
+  pointer-events: none;
+  color: #C9A84C;
+}
+
+.hero__content {
+  position: relative;
+  z-index: 1;
+  max-width: 680px;
+}
+
+.hero__title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  margin: 0 0 1rem;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  font-family: Georgia, serif;
+  color: #F5F0EB;
+}
+
+.hero__subtitle {
+  font-size: 1.05rem;
+  color: rgba(245, 240, 235, 0.8);
+  margin: 0 0 2rem;
+  line-height: 1.6;
+  font-family: sans-serif;
+}
+
+.hero__cta {
+  display: inline-block;
+  padding: 0.85rem 2.2rem;
+  background: #C9A84C;
+  color: #1C1C1E;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none;
+  border-radius: 8px;
+  letter-spacing: 0.05em;
+  transition: background 0.2s, transform 0.2s;
+  font-family: sans-serif;
+}
+.hero__cta:hover {
+  background: #E8D5A3;
+  transform: translateY(-2px);
+}
+
+/* ── SECCION INFO ─────────────────────────────────────── */
+.info {
+  padding: 5rem 1.5rem;
+  background: #fff;
+  border-bottom: 1px solid #E0D9CF;
+}
+
+.info__inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.info__title {
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: #1C1C1E;
+  text-align: center;
+  margin: 0 0 3rem;
+  font-family: Georgia, serif;
+}
+
+.info__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 2rem;
+}
+
+.info__card {
+  text-align: center;
+  padding: 2rem 1.5rem;
+  border-radius: 14px;
+  background: #F5F0EB;
+  border: 1px solid #E0D9CF;
+  transition: box-shadow 0.25s, transform 0.25s;
+}
+.info__card:hover {
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  transform: translateY(-4px);
+  border-color: #C9A84C;
+}
+
+.info__icon {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.info__card h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1C1C1E;
+  margin: 0 0 0.6rem;
+  font-family: Georgia, serif;
+}
+
+.info__card p {
+  font-size: 0.9rem;
+  color: #8E8E93;
+  margin: 0;
+  line-height: 1.6;
+  font-family: sans-serif;
+}
+
+/* ── DESTACADOS ──────────────────────────────────────── */
+.featured {
+  padding: 5rem 1.5rem;
+  background: #F5F0EB;
+}
+
+.featured__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.featured__title {
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: #1C1C1E;
+  text-align: center;
+  margin: 0 0 0.5rem;
+  font-family: Georgia, serif;
+}
+
+.featured__subtitle {
+  text-align: center;
+  color: #8E8E93;
+  font-size: 1rem;
+  margin: 0 0 2.5rem;
+  font-family: sans-serif;
+}
+
+.featured__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.featured__link {
+  display: block;
+  text-align: center;
+  color: #C9A84C;
+  font-weight: 700;
+  font-size: 1rem;
+  text-decoration: none;
+  letter-spacing: 0.03em;
+  transition: color 0.2s;
+  font-family: Georgia, serif;
+}
+.featured__link:hover { color: #1C1C1E; }
+
+.featured__loading {
+  text-align: center;
+  padding: 3rem;
+  color: #8E8E93;
+  font-family: sans-serif;
+}
+.featured__loading .spinner {
+  width: 40px; height: 40px;
+  border: 3px solid #E0D9CF;
+  border-top-color: #C9A84C;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 1rem;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.featured__empty {
+  text-align: center;
+  color: #8E8E93;
+  font-family: sans-serif;
+}
+
+@media (max-width: 600px) {
+  .hero { min-height: 320px; padding: 2rem 1rem; }
+  .info__grid, .featured__grid { grid-template-columns: 1fr; }
+}
