@@ -1,0 +1,37 @@
+﻿.pedido-wrapper { min-height: 100vh; background: #f0f2f5; }
+.navbar { background: linear-gradient(135deg, #1a1a2e, #0f3460); padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 20px rgba(0,0,0,0.2); }
+.nav-brand { color: white; font-size: 20px; font-weight: 700; }
+.btn-volver { background: transparent; color: white; border: 2px solid rgba(255,255,255,0.4); padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+.btn-volver:hover { background: rgba(255,255,255,0.1); }
+.container { max-width: 600px; margin: 0 auto; padding: 40px 24px; }
+.page-header { margin-bottom: 32px; }
+.page-header h1 { font-size: 28px; font-weight: 700; color: #1a1a2e; margin-bottom: 4px; }
+.page-header p { color: #888; font-size: 15px; }
+.pedido-card { background: white; border-radius: 20px; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+.form-group { margin-bottom: 24px; }
+.form-group label { display: block; margin-bottom: 8px; font-size: 13px; font-weight: 600; color: #444; text-transform: uppercase; letter-spacing: 0.5px; }
+.form-control { width: 100%; padding: 12px 16px; border: 2px solid #e8e8e8; border-radius: 10px; font-size: 15px; outline: none; transition: border-color 0.2s; background: white; }
+.form-control:focus { border-color: #0f3460; }
+.alert-error { background: #fff5f5; border: 1px solid #fed7d7; color: #c53030; padding: 16px; border-radius: 10px; font-size: 14px; margin-bottom: 20px; line-height: 1.5; }
+.form-actions { display: flex; gap: 12px; margin-top: 8px; }
+.btn-cancelar { flex: 1; padding: 14px; background: #f5f5f5; color: #555; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; }
+.btn-cancelar:hover { background: #ebebeb; }
+.btn-crear { flex: 2; padding: 14px; background: linear-gradient(135deg, #0f3460, #533483); color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; }
+.btn-crear:hover:not(:disabled) { opacity: 0.9; }
+.btn-crear:disabled { opacity: 0.5; cursor: not-allowed; }
+.exito-card { background: white; border-radius: 20px; padding: 48px 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); text-align: center; }
+.exito-icon { font-size: 64px; margin-bottom: 16px; }
+.exito-card h2 { font-size: 24px; font-weight: 700; color: #1a1a2e; margin-bottom: 8px; }
+.exito-card > p { color: #888; margin-bottom: 32px; }
+.pedido-detalle { background: #f8f9fa; border-radius: 12px; padding: 20px; margin-bottom: 32px; text-align: left; }
+.detalle-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
+.detalle-row:last-child { border-bottom: none; }
+.detalle-label { font-size: 13px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+.detalle-valor { font-size: 15px; font-weight: 600; color: #1a1a2e; }
+.detalle-valor.small { font-size: 12px; font-family: monospace; color: #666; }
+.badge-estado { background: #e8f5e9; color: #2e7d32; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 700; }
+.exito-actions { display: flex; gap: 12px; }
+.btn-nuevo { flex: 1; padding: 14px; background: #f5f5f5; color: #555; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; }
+.btn-nuevo:hover { background: #ebebeb; }
+.btn-catalogo { flex: 1; padding: 14px; background: linear-gradient(135deg, #0f3460, #533483); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; }
+.btn-catalogo:hover { opacity: 0.9; }

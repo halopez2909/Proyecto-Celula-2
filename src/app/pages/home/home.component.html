@@ -1,0 +1,58 @@
+<div class="home">
+  <!-- Banner principal -->
+  <section class="hero">
+    <div class="hero__content">
+      <h1 class="hero__title">Bienvenido a Relojería</h1>
+      <p class="hero__subtitle">Encuentra el reloj que define tu estilo. Diseño, precisión y calidad en cada pieza.</p>
+      <a routerLink="/catalog" class="hero__cta">Ver catálogo</a>
+    </div>
+    <div class="hero__decoration" aria-hidden="true">⌚</div>
+  </section>
+
+  <!-- Sección informativa -->
+  <section class="info">
+    <div class="info__inner">
+      <h2 class="info__title">¿Por qué comprar con nosotros?</h2>
+      <div class="info__grid">
+        <div class="info__card">
+          <span class="info__icon">🛡️</span>
+          <h3>Garantía oficial</h3>
+          <p>Todos nuestros relojes incluyen garantía de fábrica y certificado de autenticidad.</p>
+        </div>
+        <div class="info__card">
+          <span class="info__icon">🚚</span>
+          <h3>Envío seguro</h3>
+          <p>Envío nacional e internacional con embalaje protegido y seguro.</p>
+        </div>
+        <div class="info__card">
+          <span class="info__icon">💬</span>
+          <h3>Atención personalizada</h3>
+          <p>Equipo experto para asesorarte en tu compra y cuidados del reloj.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Productos destacados -->
+  <section class="featured">
+    <div class="featured__inner">
+      <h2 class="featured__title">Relojes destacados</h2>
+      <p class="featured__subtitle">Algunas de nuestras piezas más demandadas</p>
+      @if (loading) {
+        <div class="featured__loading">
+          <div class="spinner"></div>
+          <p>Cargando productos...</p>
+        </div>
+      } @else if (featuredProducts.length > 0) {
+        <div class="featured__grid">
+          @for (product of featuredProducts; track product.id) {
+            <app-product-card [product]="product" />
+          }
+        </div>
+        <a routerLink="/catalog" class="featured__link">Ver todos los relojes →</a>
+      } @else {
+        <p class="featured__empty">No hay productos destacados en este momento.</p>
+      }
+    </div>
+  </section>
+</div>

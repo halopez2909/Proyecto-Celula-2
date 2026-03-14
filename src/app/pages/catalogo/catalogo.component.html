@@ -1,0 +1,63 @@
+<div class="catalogo-wrapper">
+  <div class="container">
+    <header class="page-header">
+      <h1>Catálogo de relojes</h1>
+      <p>{{ filteredProducts().length }} de {{ products().length }} productos</p>
+    </header>
+
+    <!-- Búsqueda y filtros -->
+    <div class="filters">
+      <div class="filter-group filter-search">
+        <label for="search">Buscar por nombre</label>
+        <input
+          id="search"
+          type="text"
+          placeholder="Ej: Rolex, Omega..."
+          [value]="searchTerm()"
+          (input)="onSearch($any($event.target).value)"
+          class="input-search"
+        />
+      </div>
+      <div class="filter-group">
+        <label for="priceMin">Precio mínimo (COP)</label>
+        <input
+          id="priceMin"
+          type="number"
+          min="0"
+          step="1"
+          placeholder="Mín"
+          (input)="onPriceMin($any($event.target).value)"
+          class="input-number"
+        />
+      </div>
+      <div class="filter-group">
+        <label for="priceMax">Precio máximo (COP)</label>
+        <input
+          id="priceMax"
+          type="number"
+          min="0"
+          step="1"
+          placeholder="Máx"
+          (input)="onPriceMax($any($event.target).value)"
+          class="input-number"
+        />
+      </div>
+    </div>
+
+    <div class="loading" *ngIf="loading()">
+      <div class="spinner"></div>
+      <p>Cargando productos...</p>
+    </div>
+    <div class="alert-error" *ngIf="error()">⚠ {{ error() }}</div>
+
+    <div class="productos-grid" *ngIf="!loading() && !error()">
+      @if (filteredProducts().length === 0) {
+        <p class="no-results">No hay productos que coincidan con los filtros.</p>
+      } @else {
+        @for (product of filteredProducts(); track product.id) {
+          <app-product-card [product]="product" />
+        }
+      }
+    </div>
+  </div>
+</div>

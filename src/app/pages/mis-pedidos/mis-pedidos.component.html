@@ -1,0 +1,109 @@
+<div class="container">
+
+  <div class="header-row">
+    <h2>🕐 Mis Pedidos</h2>
+    <a routerLink="/catalogo" class="btn-volver">← Volver al catálogo</a>
+  </div>
+
+  <!-- Alertas -->
+  <div *ngIf="successMessage" class="alert alert-ok">✅ {{ successMessage }}</div>
+  <div *ngIf="errorMessage" class="alert alert-err">
+    ❌ {{ errorMessage }}
+    <button (click)="errorMessage = ''" class="btn-x">✕</button>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading">
+    <div class="spinner"></div>
+    <p>Cargando tus pedidos...</p>
+  </div>
+
+  <!-- Sin pedidos -->
+  <div *ngIf="!isLoading && orders.length === 0 && !errorMessage" class="empty">
+    <p class="empty-icon">📦</p>
+    <p>No tienes pedidos aún.</p>
+    <a routerLink="/catalogo" class="btn-primary">Ver catálogo</a>
+  </div>
+
+  <!-- Lista -->
+  <div *ngIf="!isLoading && orders.length > 0">
+
+    <!-- Panel detalle -->
+    <div *ngIf="selectedOrder" class="detail-panel">
+      <div class="detail-header">
+        <h3>Detalle — Pedido #{{ selectedOrder.id }}</h3>
+        <button (click)="selectedOrder = null" class="btn-x">✕</button>
+      </div>
+      <div class="detail-grid">
+        <div class="detail-item">
+          <span class="label">Estado</span>
+          <span class="badge {{ getStatusClass(selectedOrder.status) }}">
+            {{ getStatusLabel(selectedOrder.status) }}
+          </span>
+        </div>
+        <div class="detail-item">
+          <span class="label">Fecha</span>
+          <span>{{ selectedOrder.createdAt | date:'dd/MM/yyyy HH:mm:ss' }}</span>
+        </div>
+        <div class="detail-item full-width">
+          <span class="label">Correlation ID</span>
+          <code>{{ selectedOrder.correlationId || 'N/A' }}</code>
+        </div>
+        <div class="detail-item full-width">
+          <span class="label">Items del pedido</span>
+          <div class="items-list">
+            <div *ngFor="let item of selectedOrder.items" class="item-row">
+              📦 Producto ID: <strong>{{ item.productId }}</strong>
+              &nbsp;|&nbsp; Cantidad: <strong>{{ item.quantity }}</strong>
+            </div>
+            <div *ngIf="!selectedOrder.items || selectedOrder.items.length === 0" class="text-muted">
+              Sin items registrados
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th># Pedido</th>
+            <th>Items</th>
+            <th>Estado</th>
+            <th>Fecha</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let order of orders"
+              [class.row-active]="selectedOrder?.id === order.id">
+            <td><strong>#{{ order.id }}</strong></td>
+            <td>{{ order.items?.length ?? 0 }} item(s)</td>
+            <td>
+              <span class="badge {{ getStatusClass(order.status) }}">
+                {{ getStatusLabel(order.status) }}
+              </span>
+            </td>
+            <td>{{ order.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td class="actions">
+              <button class="btn-detail" (click)="verDetalle(order)">
+                {{ selectedOrder?.id === order.id ? 'Ocultar' : 'Detalle' }}
+              </button>
+              <button
+                *ngIf="puedeCancel(order)"
+                class="btn-cancel"
+                [disabled]="cancellingId === order.id"
+                (click)="cancelarPedido(order)">
+                <span *ngIf="cancellingId === order.id" class="spinner-sm"></span>
+                {{ cancellingId === order.id ? 'Cancelando...' : 'Cancelar' }}
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>

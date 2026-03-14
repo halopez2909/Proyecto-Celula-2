@@ -1,0 +1,49 @@
+<div class="pedido-wrapper">
+  <nav class="navbar">
+    <div class="nav-brand">&#128345; Microservicios</div>
+    <button class="btn-volver" (click)="volver()">&#8592; Volver al Catalogo</button>
+  </nav>
+  <div class="container">
+    <div class="page-header">
+      <h1>Crear Pedido</h1>
+      <p>Selecciona un producto y la cantidad que deseas ordenar</p>
+    </div>
+    <div class="pedido-card" *ngIf="!exito">
+      <form (ngSubmit)="crearPedido()">
+        <div class="form-group">
+          <label>Producto</label>
+          <select [(ngModel)]="productId" name="productId" required class="form-control">
+            <option [value]="null" disabled>Selecciona un producto...</option>
+            <option *ngFor="let p of productos" [value]="p.id">{{ p.name }} - Stock: {{ p.stock }} - ${{ p.price }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Cantidad</label>
+          <input type="number" [(ngModel)]="quantity" name="quantity" min="1" required class="form-control" placeholder="Ej: 2" />
+        </div>
+        <div class="alert-error" *ngIf="error">{{ error }}</div>
+        <div class="form-actions">
+          <button type="button" class="btn-cancelar" (click)="volver()">Cancelar</button>
+          <button type="submit" class="btn-crear" [disabled]="loading || !productId || quantity < 1">
+            <span *ngIf="!loading">Crear Pedido</span>
+            <span *ngIf="loading">Procesando...</span>
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="exito-card" *ngIf="exito && pedidoCreado">
+      <div class="exito-icon">&#10003;</div>
+      <h2>Pedido creado exitosamente!</h2>
+      <p>Tu pedido fue registrado en el sistema.</p>
+      <div class="pedido-detalle">
+        <div class="detalle-row"><span class="detalle-label">ID del Pedido</span><span class="detalle-valor"># {{ pedidoCreado.id }}</span></div>
+        <div class="detalle-row"><span class="detalle-label">Estado</span><span class="badge-estado">{{ pedidoCreado.status }}</span></div>
+        <div class="detalle-row"><span class="detalle-label">Correlation ID</span><span class="detalle-valor small">{{ pedidoCreado.correlationId }}</span></div>
+      </div>
+      <div class="exito-actions">
+        <button class="btn-nuevo" (click)="nuevoPedido()">Crear otro pedido</button>
+        <button class="btn-catalogo" (click)="volver()">Ver Catalogo</button>
+      </div>
+    </div>
+  </div>
+</div>
