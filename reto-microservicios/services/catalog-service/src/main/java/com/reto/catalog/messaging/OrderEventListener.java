@@ -29,7 +29,8 @@ public class OrderEventListener {
         MDC.put("correlationId", event.getCorrelationId() != null ? event.getCorrelationId() : "no-correlation");
 
         try {
-            log.info("[DEV8] Evento recibido - eventId: {} | correlationId: {}", event.getEventId(), event.getCorrelationId());
+            log.info("[DEV8] Evento recibido - eventId: {} | correlationId: {}",
+                    event.getEventId(), event.getCorrelationId());
 
             if (processedEventRepository.existsByEventId(event.getEventId())) {
                 log.warn("[DEV8] Evento duplicado ignorado - eventId: {}", event.getEventId());
@@ -37,7 +38,8 @@ public class OrderEventListener {
             }
 
             for (OrderCreatedEvent.ItemEvent item : event.getItems()) {
-                log.info("[DEV8] Descontando stock - productId: {} | quantity: {}", item.getProductId(), item.getQuantity());
+                log.info("[DEV8] Descontando stock - productId: {} | quantity: {}",
+                        item.getProductId(), item.getQuantity());
                 productService.descontarStock(item.getProductId(), item.getQuantity());
             }
 
@@ -46,6 +48,38 @@ public class OrderEventListener {
             processedEventRepository.save(processed);
 
             log.info("[DEV8] Evento procesado y stock descontado - eventId: {}", event.getEventId());
+
+        } finally {
+            MDC.remove("correlationId");
+        }
+    }
+
+    @RabbitListener(queues = RabbitMQConfig.QUEUE_CANCELLED)
+    @Transactional
+    public void handleOrderCancelled(OrderCancelledEvent event) {
+
+        MDC.put("correlationId", event.getCorrelationId() != null ? event.getCorrelationId() : "no-correlation");
+
+        try {
+            log.info("[DEV8] Evento cancelado recibido - eventId: {} | correlationId: {}",
+                    event.getEventId(), event.getCorrelationId());
+
+            if (processedEventRepository.existsByEventId(event.getEventId())) {
+                log.warn("[DEV8] Evento cancelado duplicado ignorado - eventId: {}", event.getEventId());
+                return;
+            }
+
+            for (OrderCancelledEvent.ItemEvent item : event.getItems()) {
+                log.info("[DEV8] Reponiendo stock - productId: {} | quantity: {}",
+                        item.getProductId(), item.getQuantity());
+                productService.reponerStock(item.getProductId(), item.getQuantity());
+            }
+
+            ProcessedEvent processed = new ProcessedEvent();
+            processed.setEventId(event.getEventId());
+            processedEventRepository.save(processed);
+
+            log.info("[DEV8] Evento cancelado procesado y stock repuesto - eventId: {}", event.getEventId());
 
         } finally {
             MDC.remove("correlationId");
