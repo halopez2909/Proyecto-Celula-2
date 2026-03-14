@@ -1,5 +1,7 @@
 package com.reto.gateway.filter;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -9,8 +11,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
@@ -18,50 +22,38 @@ import reactor.core.publisher.Mono;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-/**
- * Filtro global que valida JWT en rutas protegidas.
- *
- * - /auth/**           → libre (login, register)
- * - /actuator/**       → libre (health checks)
- * - /orders/**         → requiere JWT válido
- * - /catalog/**        → requiere JWT válido
- */
 @Component
 public class JwtAuthFilter implements GlobalFilter, Ordered {
 
     private static final Logger log = LoggerFactory.getLogger(JwtAuthFilter.class);
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     @Value("${security.jwt.secret}")
     private String secret;
 
-    // Rutas que NO requieren autenticación
-    private static final List<String> OPEN_PATHS = List.of(
-            "/auth/",
-            "/actuator/"
-    );
+    private static final List<String> OPEN_PATHS = List.of("/auth/", "/actuator/");
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
         String path = exchange.getRequest().getURI().getPath();
 
-        // Dejar pasar rutas abiertas
         if (isOpenPath(path)) {
             return chain.filter(exchange);
         }
 
-        // Verificar que venga el header Authorization
         String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             log.warn("[Gateway] 401 - Token ausente en: {}", path);
-            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return exchange.getResponse().setComplete();
+            return writeErrorResponse(exchange, HttpStatus.UNAUTHORIZED, "Token ausente o formato invalido");
         }
 
-        // Extraer y validar el token
         String token = authHeader.substring(7);
 
         try {
@@ -76,9 +68,8 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
             String email = claims.getSubject();
             String role = claims.get("role", String.class);
 
-            log.info("[Gateway] Token válido - usuario: {}, rol: {}, path: {}", email, role, path);
+            log.info("[Gateway] Token valido - usuario: {}, rol: {}, path: {}", email, role, path);
 
-            // Propagar info del usuario al microservicio downstream via headers
             ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
                     .header("X-User-Email", email)
                     .header("X-User-Role", role)
@@ -88,14 +79,32 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
 
         } catch (io.jsonwebtoken.ExpiredJwtException e) {
             log.warn("[Gateway] 401 - Token expirado en: {}", path);
-            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return exchange.getResponse().setComplete();
+            return writeErrorResponse(exchange, HttpStatus.UNAUTHORIZED, "Token expirado");
 
         } catch (Exception e) {
-            log.warn("[Gateway] 401 - Token inválido en: {} - {}", path, e.getMessage());
-            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return exchange.getResponse().setComplete();
+            log.warn("[Gateway] 401 - Token invalido en: {} - {}", path, e.getMessage());
+            return writeErrorResponse(exchange, HttpStatus.UNAUTHORIZED, "Token invalido");
         }
+    }
+
+    private Mono<Void> writeErrorResponse(ServerWebExchange exchange, HttpStatus status, String message) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("timestamp", LocalDateTime.now().toString());
+        body.put("status", status.value());
+        body.put("error", message);
+        body.put("correlationId", exchange.getRequest().getHeaders().getFirst("X-Correlation-Id"));
+
+        byte[] bytes;
+        try {
+            bytes = mapper.writeValueAsBytes(body);
+        } catch (JsonProcessingException e) {
+            bytes = ("{\"error\":\"" + message + "\"}").getBytes(StandardCharsets.UTF_8);
+        }
+
+        exchange.getResponse().setStatusCode(status);
+        exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
+        DataBuffer buffer = exchange.getResponse().bufferFactory().wrap(bytes);
+        return exchange.getResponse().writeWith(Mono.just(buffer));
     }
 
     private boolean isOpenPath(String path) {
@@ -104,7 +113,6 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
 
     @Override
     public int getOrder() {
-        // Se ejecuta DESPUÉS del CorrelationIdFilter
         return 0;
     }
 }
