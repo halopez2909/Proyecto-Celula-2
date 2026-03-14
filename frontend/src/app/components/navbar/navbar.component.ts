@@ -14,7 +14,6 @@ export class NavbarComponent {
 
   constructor(private router: Router) {}
 
-  /** Indica si el usuario está logueado (para mostrar Mis pedidos, etc.) */
   get isLoggedIn(): boolean {
     return !!localStorage.getItem('token');
   }

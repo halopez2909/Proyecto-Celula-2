@@ -21,7 +21,7 @@
       <p class="product-card__desc">{{ p.description }}</p>
     }
     <div class="product-card__footer">
-      <span class="product-card__price">{{ p.price | number:'1.2-2' }} COP</span>
+      <span class="product-card__price">{{ p.price | number:'1.0-0' }} COP</span>
       <span
         class="product-card__stock"
         [class.product-card__stock--low]="p.stock < 10"

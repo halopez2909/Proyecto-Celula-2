@@ -1,31 +1,76 @@
 <div class="catalogo-wrapper">
-  <nav class="navbar">
-    <div class="nav-brand">&#128345; Microservicios</div>
-    <div class="nav-actions">
-      <button class="btn-pedido" (click)="irACrearPedido()">+ Crear Pedido</button>
-      <button class="btn-logout" (click)="logout()">Cerrar Sesion</button>
-    </div>
-  </nav>
   <div class="container">
+
     <div class="page-header">
-      <h1>Catalogo de Productos</h1>
-      <p>{{ productos.length }} productos disponibles</p>
+      <h1>Coleccion de Alta Relojeria</h1>
+      <p>{{ productosFiltrados.length }} piezas disponibles</p>
     </div>
-    <div class="loading" *ngIf="loading"><div class="spinner"></div><p>Cargando productos...</p></div>
+
+    <!-- Filtros -->
+    <div class="filtros-panel">
+      <div class="filtro-grupo">
+        <label>Buscar reloj</label>
+        <input type="text" [(ngModel)]="busqueda" (ngModelChange)="filtrar()"
+          placeholder="Ej: Rolex, Omega..." class="filtro-input"/>
+      </div>
+      <div class="filtro-grupo">
+        <label>Precio minimo COP</label>
+        <input type="number" [(ngModel)]="precioMin" (ngModelChange)="filtrar()"
+          placeholder="Ej: 5000000" class="filtro-input"/>
+      </div>
+      <div class="filtro-grupo">
+        <label>Precio maximo COP</label>
+        <input type="number" [(ngModel)]="precioMax" (ngModelChange)="filtrar()"
+          placeholder="Ej: 50000000" class="filtro-input"/>
+      </div>
+      <div class="filtro-grupo filtro-accion">
+        <label>&nbsp;</label>
+        <button class="btn-limpiar" (click)="limpiarFiltros()">Limpiar filtros</button>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading" *ngIf="loading">
+      <div class="spinner"></div>
+      <p>Cargando coleccion...</p>
+    </div>
+
+    <!-- Error -->
     <div class="alert-error" *ngIf="error">&#9888; {{ error }}</div>
-    <div class="productos-grid" *ngIf="!loading && !error">
-      <div class="producto-card" *ngFor="let producto of productos">
-        <div class="producto-icon">&#128366;</div>
+
+    <!-- Sin resultados -->
+    <div *ngIf="!loading && productosFiltrados.length === 0 && !error" class="sin-resultados">
+      <p>&#128269; No se encontraron relojes con ese criterio.</p>
+      <button class="btn-limpiar" (click)="limpiarFiltros()">Ver todos</button>
+    </div>
+
+    <!-- Grid -->
+    <div class="productos-grid" *ngIf="!loading && productosFiltrados.length > 0">
+      <div class="producto-card" *ngFor="let producto of productosFiltrados">
+        <div class="producto-imagen">
+          <img
+            [src]="getImagen(producto.name)"
+            [alt]="producto.name"
+            (error)="$any($event.target).src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400'"
+          />
+          <span class="badge-stock-bajo" *ngIf="producto.stock < 5 && producto.stock > 0">
+            Ultimas unidades
+          </span>
+          <span class="badge-agotado" *ngIf="producto.stock === 0">Agotado</span>
+        </div>
         <div class="producto-info">
+          <p class="sku">{{ producto.sku }}</p>
           <h3>{{ producto.name }}</h3>
-          <p class="sku">SKU: {{ producto.sku }}</p>
           <p class="descripcion">{{ producto.description }}</p>
         </div>
         <div class="producto-footer">
-          <span class="precio">${{ producto.price | number:'1.2-2' }}</span>
-          <span class="stock" [class.stock-bajo]="producto.stock < 10">Stock: {{ producto.stock }}</span>
+          <span class="precio">{{ producto.price | number:'1.0-0' }} COP</span>
+          <span class="stock" [class.stock-bajo]="producto.stock < 10">
+            Stock: {{ producto.stock }}
+          </span>
         </div>
       </div>
     </div>
+
   </div>
 </div>
