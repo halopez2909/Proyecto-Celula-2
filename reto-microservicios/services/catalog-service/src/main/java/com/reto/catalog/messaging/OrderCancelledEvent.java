@@ -1,38 +1,16 @@
-package com.reto.order.messaging;
+package com.reto.catalog.messaging;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class OrderCancelledEvent {
-
     private String eventId;
     private String correlationId;
     private Long orderId;
     private List<ItemEvent> items;
-    private LocalDateTime timestamp;
-
-    public OrderCancelledEvent() {
-    }
-
-    public OrderCancelledEvent(String eventId, String correlationId, Long orderId, List<ItemEvent> items) {
-        this.eventId = eventId;
-        this.correlationId = correlationId;
-        this.orderId = orderId;
-        this.items = items;
-        this.timestamp = LocalDateTime.now();
-    }
 
     public static class ItemEvent {
         private Long productId;
         private Integer quantity;
-
-        public ItemEvent() {
-        }
-
-        public ItemEvent(Long productId, Integer quantity) {
-            this.productId = productId;
-            this.quantity = quantity;
-        }
 
         public Long getProductId() {
             return productId;
@@ -81,13 +59,5 @@ public class OrderCancelledEvent {
 
     public void setItems(List<ItemEvent> items) {
         this.items = items;
-    }
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
     }
 }

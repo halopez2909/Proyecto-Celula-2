@@ -44,51 +44,80 @@ public class OrderService {
 
     public OrderEntity createOrder(CreateOrderRequest request) {
         String correlationId = MDC.get("correlationId");
+
         for (var item : request.getItems()) {
             Long productId = item.getProductId();
             Integer quantity = item.getQuantity();
+
             StockResponse stock = catalogClient.checkStock(productId, quantity, correlationId);
             if (stock == null || !stock.isAvailable()) {
                 throw new StockConflictException("No hay stock disponible para el producto: " + productId);
             }
         }
+
         OrderEntity order = new OrderEntity();
         order.setUserId(request.getUserId());
         order.setCorrelationId(correlationId);
+
         List<OrderItem> items = request.getItems().stream()
                 .map(i -> new OrderItem(i.getProductId(), i.getQuantity()))
                 .collect(Collectors.toList());
+
         order.setItems(items);
+
         OrderEntity saved = orderRepository.save(order);
+
         List<OrderCreatedEvent.ItemEvent> eventItems = saved.getItems().stream()
                 .map(i -> new OrderCreatedEvent.ItemEvent(i.getProductId(), i.getQuantity()))
                 .collect(Collectors.toList());
+
         OrderCreatedEvent event = new OrderCreatedEvent(
-                UUID.randomUUID().toString(), correlationId,
-                saved.getId(), saved.getUserId(), eventItems);
+                UUID.randomUUID().toString(),
+                correlationId,
+                saved.getId(),
+                saved.getUserId(),
+                eventItems
+        );
+
         log.info("[DEV7] Publicando evento order.created - orderId: {} | correlationId: {}", saved.getId(), correlationId);
         eventPublisher.publishOrderCreated(event);
         log.info("[DEV7] Evento publicado exitosamente en exchange: orders.exchange");
+
         return saved;
     }
 
     public OrderEntity cancelOrder(Long id) {
         String correlationId = MDC.get("correlationId");
+
         OrderEntity order = orderRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pedido no encontrado con id: " + id));
+
         if (order.getStatus() == OrderStatus.CANCELLED) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "El pedido ya esta CANCELADO");
         }
+
         if (order.getStatus() != OrderStatus.CREATED) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Solo se pueden cancelar pedidos en estado CREATED");
         }
+
         order.setStatus(OrderStatus.CANCELLED);
         OrderEntity saved = orderRepository.save(order);
+
+        List<OrderCancelledEvent.ItemEvent> eventItems = saved.getItems().stream()
+                .map(i -> new OrderCancelledEvent.ItemEvent(i.getProductId(), i.getQuantity()))
+                .collect(Collectors.toList());
+
         OrderCancelledEvent event = new OrderCancelledEvent(
-                UUID.randomUUID().toString(), correlationId, saved.getId());
+                UUID.randomUUID().toString(),
+                correlationId,
+                saved.getId(),
+                eventItems
+        );
+
         log.info("[DEV1] Publicando evento order.cancelled - orderId: {} | correlationId: {}", saved.getId(), correlationId);
         eventPublisher.publishOrderCancelled(event);
         log.info("[DEV1] Evento order.cancelled publicado exitosamente");
+
         return saved;
     }
 }
